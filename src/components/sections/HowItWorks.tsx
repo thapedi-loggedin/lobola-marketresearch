@@ -137,15 +137,15 @@ export function HowItWorks() {
                     <li
                       key={step}
                       className="rounded-md border border-border bg-white px-4 py-4"
-                      ref={servicesDropdownRef}
                     >
-                      <p className="text-xs font-medium uppercase tracking-wide text-[var(--lobola-muted-text)]">
-                        Step {idx + 1}
-                      </p>
-                      <p className="mt-2 mb-3 text-sm font-medium text-[var(--lobola-text)] break-words">
-                        {step}
-                      </p>
-                      <div className="relative">
+                      <div ref={servicesDropdownRef}>
+                        <p className="text-xs font-medium uppercase tracking-wide text-[var(--lobola-muted-text)]">
+                          Step {idx + 1}
+                        </p>
+                        <p className="mt-2 mb-3 text-sm font-medium text-[var(--lobola-text)] break-words">
+                          {step}
+                        </p>
+                        <div className="relative">
                         <button
                           type="button"
                           onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
@@ -202,6 +202,7 @@ export function HowItWorks() {
                             </div>
                           </div>
                         )}
+                        </div>
                       </div>
                     </li>
                   );
