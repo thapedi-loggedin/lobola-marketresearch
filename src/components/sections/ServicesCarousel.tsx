@@ -16,6 +16,7 @@ import {
   Landmark,
   Building2,
   Check,
+  ScrollText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +27,9 @@ const serviceIconByKey: Record<string, React.ReactNode> = {
   estate_planning: <Landmark className="size-5 text-[var(--lobola-gold)]" />,
   business_family_structures: (
     <Building2 className="size-5 text-[var(--lobola-gold)]" />
+  ),
+  lobola_letters_contracts: (
+    <ScrollText className="size-5 text-[var(--lobola-gold)]" />
   ),
 };
 

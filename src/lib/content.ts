@@ -50,8 +50,8 @@ export const howItWorks = {
   label: "How it works",
   heading: "A clear path — from choice to compliant documents.",
   steps: [
-    "Choose your service",
     "Select your language",
+    "Choose your service",
     "Complete secure online forms",
     "Attorney review & compliance",
     "Pay online",
@@ -102,7 +102,8 @@ export type Service = {
     | "prenuptial_agreements"
     | "divorce_separation"
     | "estate_planning"
-    | "business_family_structures";
+    | "business_family_structures"
+    | "lobola_letters_contracts";
   iconLabel: string;
   title: string;
   intro: string;
@@ -178,6 +179,19 @@ export const services: Service[] = [
       "Trust to business integration",
     ],
     preselectNeed: "Business / family structures",
+  },
+  {
+    key: "lobola_letters_contracts",
+    iconLabel: "📜",
+    title: "Lobola letters and contracts",
+    intro:
+      "Professional documentation for lobola negotiations and agreements.",
+    bullets: [
+      "Lobola negotiation letters",
+      "Lobola agreement contracts",
+      "Attorney-reviewed documentation",
+    ],
+    preselectNeed: "Marriage services",
   },
 ];
 
