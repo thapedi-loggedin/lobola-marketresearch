@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { contact } from "@/lib/content";
 import { Separator } from "@/components/ui/separator";
 import { CTAButtons } from "@/components/shared/CTAButtons";
@@ -231,6 +232,23 @@ export function Contact() {
             <div className="mt-6 pt-6 border-t border-border">
               <CTAButtons primaryLabel={contact.footerCtaButton} align="left" />
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Blog Button Section */}
+      <div className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
+        <div className="mx-auto max-w-4xl">
+          <div className="rounded-md border border-border bg-white p-5 sm:p-6 text-center">
+            <p className="text-sm font-medium text-[var(--lobola-text)] mb-4">
+              Explore our blog for insights and guidance
+            </p>
+            <Button
+              asChild
+              className="min-h-[44px] bg-[var(--lobola-graphite)] text-[var(--lobola-bone)] hover:bg-[#3a3a3a]"
+            >
+              <Link href="/blog">View Blog</Link>
+            </Button>
           </div>
         </div>
       </div>

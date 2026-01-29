@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 
 export function HowItWorks() {
+  const [mounted, setMounted] = React.useState(false);
   const [selectedLanguage, setSelectedLanguage] = React.useState<string>("");
   const [selectedServices, setSelectedServices] = React.useState<Set<string>>(
     new Set()
@@ -24,6 +25,11 @@ export function HowItWorks() {
     React.useState(false);
   const [loginModalOpen, setLoginModalOpen] = React.useState(false);
   const servicesDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  // Ensure component only renders Select after client-side hydration
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleService = (serviceKey: string) => {
     setSelectedServices((prev) => {
@@ -100,21 +106,27 @@ export function HowItWorks() {
                       <p className="mt-2 mb-3 text-sm font-medium text-[var(--lobola-text)] break-words">
                         {step}
                       </p>
-                      <Select
-                        value={selectedLanguage}
-                        onValueChange={setSelectedLanguage}
-                      >
-                        <SelectTrigger className="w-full bg-white min-h-[44px]">
-                          <SelectValue placeholder="Select a language" />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[280px]">
-                          {languages.map((lang) => (
-                            <SelectItem key={lang} value={lang}>
-                              {lang}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      {mounted ? (
+                        <Select
+                          value={selectedLanguage}
+                          onValueChange={setSelectedLanguage}
+                        >
+                          <SelectTrigger className="w-full bg-white min-h-[44px]">
+                            <SelectValue placeholder="Select a language" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[280px]">
+                            {languages.map((lang) => (
+                              <SelectItem key={lang} value={lang}>
+                                {lang}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="w-full rounded-md border border-input bg-white px-3 py-2 text-sm min-h-[44px] flex items-center text-[var(--lobola-muted-text)]">
+                          Select a language
+                        </div>
+                      )}
                     </li>
                   );
                 }

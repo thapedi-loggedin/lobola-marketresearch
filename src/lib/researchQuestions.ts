@@ -84,10 +84,9 @@ export const step6Pricing = {
   question: "What feels reasonable for digital legal services like this?",
   options: [
     "Free information only",
-    "R200–R500",
-    "R500–R1,000",
-    "R1,000–R3,000",
-    "R3,000+",
+    "R500-R5 000",
+    "R5 000-R10 000",
+    "R10 000+",
     "Depends on the service",
   ] as const,
 };

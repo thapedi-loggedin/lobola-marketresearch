@@ -101,6 +101,12 @@ html {
   }
 }
 
+/* Ensure Next.js portals don't have positioning that interferes with dialog positioning */
+nextjs-portal {
+  left: unset !important;
+  top: unset !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

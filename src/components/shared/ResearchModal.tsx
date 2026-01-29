@@ -288,7 +288,18 @@ export function ResearchModal({
         open={open && !showConfirmClose}
         onOpenChange={(next) => handleClose(false)}
       >
-        <DialogContent className="max-w-xl bg-white p-4 sm:p-6">
+        <DialogContent 
+          className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl bg-white p-4 sm:p-6"
+          // #region agent log
+          ref={(node) => {
+            if (node && typeof window !== 'undefined') {
+              const rect = node.getBoundingClientRect();
+              const styles = window.getComputedStyle(node);
+              fetch('http://127.0.0.1:7246/ingest/eb73270a-a613-4952-ac89-233027f0a62e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ResearchModal.tsx:DialogContent',message:'ResearchModal dialog rendered',data:{width:rect.width,height:rect.height,top:rect.top,left:rect.left,computedWidth:styles.width,computedMaxWidth:styles.maxWidth,viewportWidth:window.innerWidth,viewportHeight:window.innerHeight,isVisible:rect.width>0&&rect.height>0&&rect.top>=0&&rect.left>=0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+            }
+          }}
+          // #endregion agent log
+        >
           {success ? (
             <>
               <DialogHeader>
