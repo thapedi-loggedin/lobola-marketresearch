@@ -26,7 +26,7 @@ export function Navbar() {
           </span>
         </a>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-6 min-[1069px]:flex" aria-label="Primary">
           {navItems.map((item) => (
             <a
               key={item.id}
@@ -40,7 +40,7 @@ export function Navbar() {
 
         <Button
           variant="outline"
-          className="min-h-[44px] min-w-[44px] md:hidden"
+          className="min-h-[44px] min-w-[44px] min-[1069px]:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => setOpen((v) => !v)}
@@ -52,7 +52,7 @@ export function Navbar() {
 
       <div
         id="mobile-nav"
-        className={cn("md:hidden", open ? "block" : "hidden")}
+        className={cn("min-[1069px]:hidden", open ? "block" : "hidden")}
       >
         <Separator />
         <nav className="mx-auto max-w-6xl px-4 py-3 sm:px-6" aria-label="Mobile">
