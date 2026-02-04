@@ -1,3 +1,25 @@
+import type { PostgrestError } from "@supabase/supabase-js";
+import { supabase } from "./supabase";
+
+/** Build a user-facing message explaining why the database update failed. */
+function databaseErrorMessage(error: unknown): string {
+  if (error && typeof error === "object" && "message" in error) {
+    const err = error as PostgrestError & { message?: string; code?: string; details?: string };
+    const msg = typeof err.message === "string" ? err.message : "";
+    const code = typeof err.code === "string" ? err.code : "";
+    const details = typeof err.details === "string" ? err.details : "";
+    if (msg) {
+      const parts = ["We couldn't save your answers to the database."];
+      parts.push(`Reason: ${msg}`);
+      if (code) parts.push(`(Error code: ${code})`);
+      if (details) parts.push(details);
+      return parts.join(" ");
+    }
+  }
+  if (error instanceof Error) return error.message;
+  return "We couldn't save your answers to the database. Please check your connection and try again.";
+}
+
 export type ResearchSubmission = {
   purpose: string[];
   timing: string;
@@ -25,7 +47,7 @@ export const step1Intro = {
 export const step2Purpose = {
   question: "What are you here for?",
   options: [
-    "Getting married",
+    "Paid Lobola to someone you are no longer with",
     "Lobola / customary process",
     "Prenuptial agreement",
     "Divorce / separation",
@@ -126,7 +148,7 @@ export const languages = [
 
 export type Language = (typeof languages)[number];
 
-// Submit function
+// Submit function: stores in Supabase when configured, else falls back to localStorage
 export async function submitResearch(
   data: ResearchSubmission,
 ): Promise<void> {
@@ -134,20 +156,39 @@ export async function submitResearch(
   const submittedKey = "lobola_research_modal_submitted";
 
   try {
-    // Append to submissions array
-    const existingRaw = localStorage.getItem(storageKey);
+    if (supabase) {
+      const { error } = await supabase.from("research_submissions").insert({
+        purpose: data.purpose,
+        timing: data.timing,
+        challenge: data.challenge,
+        engagement: data.engagement,
+        pricing: data.pricing,
+        full_name: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        preferred_language: data.preferredLanguage,
+        consent: data.consent,
+        submitted_at: data.submittedAt,
+        source: data.source,
+      });
+      if (error) {
+        const userMessage = databaseErrorMessage(error);
+        throw new Error(userMessage);
+      }
+    }
+
+    // Fallback / backup: also keep in localStorage when Supabase isn't configured
+    const existingRaw = typeof localStorage !== "undefined" ? localStorage.getItem(storageKey) : null;
     const existing = existingRaw ? (JSON.parse(existingRaw) as unknown[]) : [];
     const next = Array.isArray(existing) ? [...existing, data] : [data];
-    localStorage.setItem(storageKey, JSON.stringify(next));
-
-    // Set submitted flag
-    localStorage.setItem(submittedKey, "true");
-
-    // Console log for debugging
-    // eslint-disable-next-line no-console
-    console.log("[lobola] ResearchSubmission", data);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(storageKey, JSON.stringify(next));
+      localStorage.setItem(submittedKey, "true");
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("[lobola] Failed to store research submission", error);
+    const userMessage = databaseErrorMessage(error);
+    throw new Error(userMessage);
   }
 }

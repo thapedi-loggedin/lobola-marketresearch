@@ -301,7 +301,7 @@ export const contact = {
   label: "Contact",
   heading: "Reach the team",
   siteLine: "🌐 www.lobola.co.za",
-  emailLine: "📧 Support Email (placeholder)",
+  emailLine: "📧 info@lobola.co.za",
   footerCtaHeadline: "Go to www.lobola.co.za before you get married.",
   footerCtaButton: "Take the 30-second survey",
 };

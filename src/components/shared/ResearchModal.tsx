@@ -134,7 +134,7 @@ export function ResearchModal({
     if (preselectNeeds.length > 0) {
       const preselected = new Set<PurposeOption>();
       preselectNeeds.forEach((need) => {
-        if (need === "Marriage services") preselected.add("Getting married");
+        if (need === "Marriage services") preselected.add("Paid Lobola to someone you are no longer with");
         if (need === "Prenuptial agreement") preselected.add("Prenuptial agreement");
         if (need === "Divorce / separation") preselected.add("Divorce / separation");
         if (need === "Wills / trust / estate planning")
@@ -233,6 +233,10 @@ export function ResearchModal({
     if (!validateStep(7)) return;
     if (submitting) return;
 
+    setErrors((prev) => {
+      const { submit: _submit, ...rest } = prev;
+      return rest;
+    });
     setSubmitting(true);
     const payload: ResearchSubmission = {
       purpose: Array.from(purpose),
@@ -257,6 +261,10 @@ export function ResearchModal({
         onOpenChange(false);
         resetForm();
       }, 2000);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "We couldn't save your answers. Please try again.";
+      setErrors((prev) => ({ ...prev, submit: message }));
     } finally {
       setSubmitting(false);
     }
@@ -577,6 +585,12 @@ export function ResearchModal({
                       )}
                     </div>
                   </div>
+                )}
+
+                {errors.submit && (
+                  <p className="text-sm text-destructive rounded-md bg-destructive/10 p-3" role="alert">
+                    {errors.submit}
+                  </p>
                 )}
 
                 {/* Navigation Buttons */}
