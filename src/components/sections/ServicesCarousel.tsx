@@ -151,7 +151,7 @@ export function ServicesCarousel() {
                         onClick={() =>
                           openModal({
                             preselectNeeds: [s.preselectNeed],
-                            reason: "cta",
+                            reason: "services-carousel",
                           })
                         }
                       >
@@ -194,7 +194,7 @@ export function ServicesCarousel() {
             </p>
             <Button
               className="min-h-[44px] bg-[var(--lobola-graphite)] text-[var(--lobola-bone)] hover:bg-[#3a3a3a]"
-              onClick={() => openModal({ reason: "cta" })}
+              onClick={() => openModal({ reason: "services-carousel" })}
             >
               {servicesSection.stripButton}
             </Button>

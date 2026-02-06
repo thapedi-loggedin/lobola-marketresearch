@@ -25,7 +25,7 @@ export function Footer() {
             <p className="font-serif text-xl text-[var(--lobola-graphite)]">
               {contact.footerCtaHeadline}
             </p>
-            <CTAButtons primaryLabel={contact.footerCtaButton} />
+            <CTAButtons primaryLabel={contact.footerCtaButton} source="footer" />
           </div>
         </div>
 

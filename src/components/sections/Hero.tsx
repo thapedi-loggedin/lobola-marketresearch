@@ -41,6 +41,7 @@ export function Hero() {
               secondaryLabel={hero.ctaSecondary}
               secondaryHref="#services"
               align="center"
+              source="hero"
             />
           </div>
         </div>

@@ -230,7 +230,7 @@ export function Contact() {
             )}
 
             <div className="mt-6 pt-6 border-t border-border">
-              <CTAButtons primaryLabel={contact.footerCtaButton} align="left" />
+              <CTAButtons primaryLabel={contact.footerCtaButton} align="left" source="contact" />
             </div>
           </div>
         </div>

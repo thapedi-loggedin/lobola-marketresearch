@@ -32,8 +32,8 @@ export type ResearchSubmission = {
   preferredLanguage: string;
   consent: boolean;
   submittedAt: string; // ISO
-  source: "scroll60" | "cta";
-};
+  source: string; // e.g. "scroll60", "how-it-works", "bundles", "services-carousel", "hero", "contact", "footer"
+}
 
 // Step 1: Intro
 export const step1Intro = {

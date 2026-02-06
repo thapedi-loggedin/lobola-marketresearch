@@ -44,7 +44,7 @@ export function HowItWorks() {
   };
 
   const handleStep3Click = () => {
-    openResearchModal({ reason: "cta" });
+    openResearchModal({ reason: "how-it-works" });
   };
 
   // Close dropdown when clicking outside

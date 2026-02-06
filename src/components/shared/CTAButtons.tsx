@@ -13,6 +13,8 @@ type Props = {
   preselectNeeds?: NeedCategory[];
   notesSeed?: string;
   align?: "center" | "left";
+  /** Source identifier when opening the research modal (e.g. "hero", "contact", "footer"). */
+  source?: string;
 };
 
 export function CTAButtons({
@@ -22,6 +24,7 @@ export function CTAButtons({
   preselectNeeds,
   notesSeed,
   align = "center",
+  source,
 }: Props) {
   const { openModal } = useResearchModal();
 
@@ -34,7 +37,7 @@ export function CTAButtons({
     >
       <Button
         className="w-full min-h-[44px] bg-[var(--lobola-graphite)] text-[var(--lobola-bone)] hover:bg-[#3a3a3a] sm:w-auto"
-        onClick={() => openModal({ preselectNeeds, notesSeed, reason: "cta" })}
+        onClick={() => openModal({ preselectNeeds, notesSeed, reason: source ?? "cta" })}
       >
         {primaryLabel}
       </Button>

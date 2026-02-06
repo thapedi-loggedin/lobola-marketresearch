@@ -61,7 +61,7 @@ export function Bundles() {
                           className="min-h-[44px] bg-[var(--lobola-graphite)] text-[var(--lobola-bone)] hover:bg-[#3a3a3a]"
                           onClick={() =>
                             openModal({
-                              reason: "cta",
+                              reason: "bundles",
                               notesSeed: `Interested in bundle: ${b.name}`,
                             })
                           }

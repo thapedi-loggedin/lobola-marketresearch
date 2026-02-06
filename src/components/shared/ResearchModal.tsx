@@ -56,7 +56,7 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   preselectNeeds?: NeedCategory[];
   notesSeed?: string;
-  source: "scroll60" | "cta";
+  source: string;
 };
 
 export function ResearchModal({

@@ -4,12 +4,11 @@ import * as React from "react";
 import type { NeedCategory } from "@/lib/content";
 import { ResearchModal } from "@/components/shared/ResearchModal";
 
-type OpenReason = "cta" | "scroll60";
-
 type OpenArgs = {
   preselectNeeds?: NeedCategory[];
   notesSeed?: string;
-  reason?: OpenReason;
+  /** Source identifier for analytics (e.g. "how-it-works", "bundles", "hero", "scroll60"). */
+  reason?: string;
 };
 
 type ResearchModalContextValue = {
@@ -31,7 +30,7 @@ export function ResearchModalProvider({
   const [open, setOpen] = React.useState(false);
   const [preselectNeeds, setPreselectNeeds] = React.useState<NeedCategory[]>([]);
   const [notesSeed, setNotesSeed] = React.useState<string>("");
-  const [source, setSource] = React.useState<OpenReason>("cta");
+  const [source, setSource] = React.useState<string>("cta");
   const autoOpenedOnceRef = React.useRef(false);
 
   const openModal = React.useCallback((args?: OpenArgs) => {
