@@ -177,6 +177,25 @@ export async function submitResearch(
       }
     }
 
+    // Also send to Google Sheets (via our API route) when configured
+    try {
+      const base =
+        typeof window !== "undefined" ? window.location.origin : "";
+      const res = await fetch(`${base}/api/submit-research-sheets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        // eslint-disable-next-line no-console
+        console.warn("[lobola] Google Sheets submit failed", res.status, errBody);
+      }
+    } catch (sheetsErr) {
+      // eslint-disable-next-line no-console
+      console.warn("[lobola] Google Sheets request error", sheetsErr);
+    }
+
     // Fallback / backup: also keep in localStorage when Supabase isn't configured
     const existingRaw = typeof localStorage !== "undefined" ? localStorage.getItem(storageKey) : null;
     const existing = existingRaw ? (JSON.parse(existingRaw) as unknown[]) : [];

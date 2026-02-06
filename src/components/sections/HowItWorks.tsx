@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LoginModal } from "@/components/shared/LoginModal";
+import { useResearchModal } from "@/components/shared/ResearchModalProvider";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 
@@ -23,7 +23,7 @@ export function HowItWorks() {
   );
   const [servicesDropdownOpen, setServicesDropdownOpen] =
     React.useState(false);
-  const [loginModalOpen, setLoginModalOpen] = React.useState(false);
+  const { openModal: openResearchModal } = useResearchModal();
   const servicesDropdownRef = React.useRef<HTMLDivElement>(null);
 
   // Ensure component only renders Select after client-side hydration
@@ -44,7 +44,7 @@ export function HowItWorks() {
   };
 
   const handleStep3Click = () => {
-    setLoginModalOpen(true);
+    openResearchModal({ reason: "cta" });
   };
 
   // Close dropdown when clicking outside
@@ -227,7 +227,7 @@ export function HowItWorks() {
                       }}
                       tabIndex={0}
                       role="button"
-                      aria-label={`${step} - Click to sign in`}
+                      aria-label={`${step} - Open market research questionnaire`}
                     >
                       <p className="text-xs font-medium uppercase tracking-wide text-[var(--lobola-muted-text)]">
                         Step {idx + 1}
@@ -236,7 +236,7 @@ export function HowItWorks() {
                         {step}
                       </p>
                       <p className="mt-2 text-xs text-[var(--lobola-muted-text)]">
-                        Sign in required →
+                        Login →
                       </p>
                     </li>
                   );
@@ -266,7 +266,6 @@ export function HowItWorks() {
         </div>
       </section>
 
-      <LoginModal open={loginModalOpen} onOpenChange={setLoginModalOpen} />
     </>
   );
 }
