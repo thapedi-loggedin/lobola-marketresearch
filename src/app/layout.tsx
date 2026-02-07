@@ -16,8 +16,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.lobola.co.za"),
   icons: {
-    icon: "/lobola-favicon.svg",
-    type: "image/svg+xml",
+    icon: { url: "/lobola-favicon.svg", type: "image/svg+xml" },
   },
   title: "lobola.co.za | Marriage. Family. Legacy.",
   description:
