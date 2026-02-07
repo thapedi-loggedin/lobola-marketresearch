@@ -295,6 +295,8 @@ export const about = {
   heading: "A modern platform for marriage, family, and legacy.",
   body:
     "www.lobola.co.za was created to protect families, marriages, and legacies by making legal and customary processes simple, transparent, and accessible to all South Africans.",
+  partnershipText: "lobola.co.za is in partnership with RJS Inc Attorneys.",
+  partnerLogo: "/rjs-inc-law-icon.svg",
 };
 
 export const contact = {

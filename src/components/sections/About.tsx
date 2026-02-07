@@ -19,6 +19,17 @@ export function About() {
           <p className="text-sm leading-6 text-[var(--lobola-warm-gray)] break-words">
             {about.body}
           </p>
+
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <img
+              src={about.partnerLogo}
+              alt="RJS Inc Attorneys"
+              className="h-12 w-auto"
+            />
+            <p className="text-sm text-[var(--lobola-warm-gray)]">
+              {about.partnershipText}
+            </p>
+          </div>
         </div>
       </div>
     </section>
