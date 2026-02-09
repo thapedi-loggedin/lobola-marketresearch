@@ -33,7 +33,25 @@ export type ResearchSubmission = {
   consent: boolean;
   submittedAt: string; // ISO
   source: string; // e.g. "scroll60", "how-it-works", "bundles", "services-carousel", "hero", "contact", "footer"
-}
+};
+
+/** Payload for save-on-next (upsert by sessionId in Google Sheets). */
+export type ResearchProgressPayload = {
+  sessionId: string;
+  submitted: boolean;
+  purpose?: string[];
+  timing?: string;
+  challenge?: string;
+  engagement?: string;
+  pricing?: string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  preferredLanguage?: string;
+  consent?: boolean;
+  submittedAt?: string;
+  source?: string;
+};
 
 // Step 1: Intro
 export const step1Intro = {
@@ -148,9 +166,42 @@ export const languages = [
 
 export type Language = (typeof languages)[number];
 
+/** Saves partial or final progress to Google Sheets (upsert by sessionId). Fire-and-forget. */
+export function saveResearchProgress(
+  sessionId: string,
+  data: Partial<ResearchSubmission> & { source: string },
+  submitted: boolean,
+): void {
+  const full: ResearchProgressPayload = {
+    sessionId,
+    submitted,
+    purpose: data.purpose ?? [],
+    timing: data.timing ?? "",
+    challenge: data.challenge ?? "",
+    engagement: data.engagement ?? "",
+    pricing: data.pricing ?? "",
+    fullName: data.fullName ?? "",
+    email: data.email ?? "",
+    phone: data.phone ?? "",
+    preferredLanguage: data.preferredLanguage ?? "",
+    consent: data.consent ?? false,
+    submittedAt: data.submittedAt ?? new Date().toISOString(),
+    source: data.source ?? "",
+  };
+  const base = typeof window !== "undefined" ? window.location.origin : "";
+  fetch(`${base}/api/submit-research-sheets`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(full),
+  }).catch(() => {
+    // fire-and-forget
+  });
+}
+
 // Submit function: stores in Supabase when configured, else falls back to localStorage
 export async function submitResearch(
   data: ResearchSubmission,
+  options?: { sessionId?: string },
 ): Promise<void> {
   const storageKey = "lobola_research_submissions";
   const submittedKey = "lobola_research_modal_submitted";
@@ -177,14 +228,18 @@ export async function submitResearch(
       }
     }
 
-    // Also send to Google Sheets (via our API route) when configured
+    // Also send to Google Sheets (via our API route); include sessionId so same row is updated
     try {
       const base =
         typeof window !== "undefined" ? window.location.origin : "";
+      const sheetsBody = {
+        ...data,
+        ...(options?.sessionId != null && { sessionId: options.sessionId, submitted: true }),
+      };
       const res = await fetch(`${base}/api/submit-research-sheets`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(sheetsBody),
       });
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));

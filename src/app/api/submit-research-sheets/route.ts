@@ -1,6 +1,8 @@
 import type { ResearchSubmission } from "@/lib/researchQuestions";
 import { NextResponse } from "next/server";
 
+type SheetsBody = ResearchSubmission & { sessionId?: string; submitted?: boolean };
+
 // Support both names so .env.local works whether you use RESEARCH_SHEETS_* or GOOGLE_SHEETS_*
 const WEB_APP_URL =
   process.env.RESEARCH_SHEETS_WEB_APP_URL?.trim() ||
@@ -19,9 +21,9 @@ export async function POST(request: Request) {
     );
   }
 
-  let data: ResearchSubmission;
+  let data: SheetsBody;
   try {
-    data = (await request.json()) as ResearchSubmission;
+    data = (await request.json()) as SheetsBody;
   } catch {
     return NextResponse.json(
       { success: false, error: "Invalid JSON body" },

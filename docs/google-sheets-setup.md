@@ -10,12 +10,14 @@ Follow these steps in order. Reply "done" after each step so we can continue.
 
 In the **first row** of the sheet where you want responses to go, add these column headers (one per cell, in this order):
 
-| A | B | C | D | E | F | G | H | I | J | K | L |
-|---||---||---||---||---||---||---||---||---||---|
-| purpose | timing | challenge | engagement | pricing | full_name | email | phone | preferred_language | consent | submitted_at | source |
+| A | B | C | D | E | F | G | H | I | J | K | L | M | N |
+|---||---||---||---||---||---||---||---||---||---||---||---|---|
+| session_id | purpose | timing | challenge | engagement | pricing | full_name | email | phone | preferred_language | consent | submitted_at | source | submitted |
 
-- **purpose** will store multiple choices as comma-separated text (e.g. "Lobola / customary process, Prenuptial agreement").
-- Leave row 2 and below empty; the script will append new rows there.
+- **session_id** identifies one questionnaire session; the script updates the same row on each "Next" and on final submit so all answers stay in one row.
+- **purpose** stores multiple choices as comma-separated text (e.g. "Lobola / customary process, Prenuptial agreement").
+- **submitted** is "Yes" when the user completed the form, "No" when they only progressed through steps (save-on-next).
+- Leave row 2 and below empty (or existing rows as-is); the script will append or update rows.
 
 ### 1.2 – Get your Sheet ID
 
@@ -41,8 +43,10 @@ function doPost(e) {
     var sheet = ss.getSheetByName('Sheet1'); // Change to your tab name if different
 
     var purposeStr = Array.isArray(data.purpose) ? data.purpose.join(', ') : (data.purpose || '');
+    var submittedStr = data.submitted === true ? 'Yes' : 'No';
 
-    sheet.appendRow([
+    var rowValues = [
+      data.sessionId || '',
       purposeStr,
       data.timing || '',
       data.challenge || '',
@@ -54,8 +58,31 @@ function doPost(e) {
       data.preferredLanguage || '',
       data.consent === true ? 'Yes' : 'No',
       data.submittedAt || '',
-      data.source || ''
-    ]);
+      data.source || '',
+      submittedStr
+    ];
+
+    if (data.sessionId) {
+      var lastRow = sheet.getLastRow();
+      var sessionCol = 1;
+      var foundRow = null;
+      if (lastRow >= 2) {
+        var colA = sheet.getRange(2, sessionCol, lastRow, sessionCol).getValues();
+        for (var r = 0; r < colA.length; r++) {
+          if (String(colA[r][0]) === String(data.sessionId)) {
+            foundRow = r + 2;
+            break;
+          }
+        }
+      }
+      if (foundRow !== null) {
+        sheet.getRange(foundRow, 1, foundRow, rowValues.length).setValues([rowValues]);
+      } else {
+        sheet.appendRow(rowValues);
+      }
+    } else {
+      sheet.appendRow(rowValues);
+    }
 
     return ContentService
       .createTextOutput(JSON.stringify({ success: true }))
@@ -70,6 +97,7 @@ function doPost(e) {
 
 5. **Save** the project (Ctrl+S or the disk icon).
 6. Run **doPost** once from the editor (Run → doPost) just to trigger authorization if needed; it may fail with "cannot read postData" when run from the editor—that’s OK. The important part is that Google has authorized the script.
+7. After changing the script, deploy a **New version** of your Web app (see Step 2.3) so the live URL runs the upsert logic (one row per session, updated on each "Next" and on submit).
 
 When you’ve finished **1.1**, **1.2**, and **1.3**, reply **"done"** and we’ll go to the next step (deploy the script and get the Web app URL).
 
@@ -142,6 +170,6 @@ node scripts/test-sheets-api.mjs
 
 1. Open the site and go to the **How it works** section.
 2. Click the **Login** step (Step 3) to open the research questionnaire.
-3. Complete and submit the form.
-4. Check your **Google Sheet** — a new row should appear with your answers.
-5. **Supabase** (if configured) and **localStorage** still receive the same data; the questionnaire is stored in all three places.
+3. As you click **Next** through the steps, the same row in the sheet is updated (save-on-next). When you submit, that row is updated again with `submitted` = Yes.
+4. Check your **Google Sheet** — one row per session, with `session_id` in column A and `submitted` (Yes/No) in the last column.
+5. **Supabase** (if configured) and **localStorage** receive the full submission on final submit only; the sheet receives progress on each Next and the final submit.

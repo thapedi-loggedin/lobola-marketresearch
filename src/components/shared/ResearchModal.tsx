@@ -33,6 +33,7 @@ import {
   successMessage,
   languages,
   submitResearch,
+  saveResearchProgress,
   type ResearchSubmission,
   type PurposeOption,
   type TimingOption,
@@ -82,6 +83,7 @@ export function ResearchModal({
   const [success, setSuccess] = React.useState(false);
   const [showConfirmClose, setShowConfirmClose] = React.useState(false);
   const closeTimerRef = React.useRef<number | null>(null);
+  const sessionIdRef = React.useRef<string | null>(null);
 
   const hasStartedSurvey = React.useMemo(() => {
     return (
@@ -127,8 +129,12 @@ export function ResearchModal({
 
   React.useEffect(() => {
     if (!open) {
+      sessionIdRef.current = null;
       resetForm();
       return;
+    }
+    if (!sessionIdRef.current) {
+      sessionIdRef.current = crypto.randomUUID();
     }
     // Apply preselection on open
     if (preselectNeeds.length > 0) {
@@ -203,8 +209,40 @@ export function ResearchModal({
     if (currentStep < 7) {
       setCurrentStep(currentStep + 1);
       setErrors({});
+      const sid = sessionIdRef.current;
+      if (sid) {
+        const payload: ResearchSubmission = {
+          purpose: Array.from(purpose),
+          timing,
+          challenge,
+          engagement,
+          pricing,
+          fullName: fullName.trim(),
+          email: email.trim(),
+          phone: normalizePhone(phone),
+          preferredLanguage,
+          consent,
+          submittedAt: new Date().toISOString(),
+          source,
+        };
+        saveResearchProgress(sid, payload, false);
+      }
     }
-  }, [currentStep, validateStep]);
+  }, [
+    currentStep,
+    validateStep,
+    purpose,
+    timing,
+    challenge,
+    engagement,
+    pricing,
+    fullName,
+    email,
+    phone,
+    preferredLanguage,
+    consent,
+    source,
+  ]);
 
   const handleBack = React.useCallback(() => {
     if (currentStep > 1) {
@@ -254,7 +292,9 @@ export function ResearchModal({
     };
 
     try {
-      await submitResearch(payload);
+      await submitResearch(payload, {
+        sessionId: sessionIdRef.current ?? undefined,
+      });
       setSuccess(true);
       setErrors({});
       closeTimerRef.current = window.setTimeout(() => {
