@@ -189,6 +189,9 @@ export function saveResearchProgress(
     source: data.source ?? "",
   };
   const base = typeof window !== "undefined" ? window.location.origin : "";
+  // #region agent log
+  fetch('http://127.0.0.1:7246/ingest/eb73270a-a613-4952-ac89-233027f0a62e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'researchQuestions.ts:saveResearchProgress',message:'body before fetch',data:{sessionId:full.sessionId,submitted:full.submitted,hasSessionId:Boolean(full.sessionId)},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+  // #endregion agent log
   fetch(`${base}/api/submit-research-sheets`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

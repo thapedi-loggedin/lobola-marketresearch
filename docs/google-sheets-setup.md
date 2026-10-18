@@ -63,20 +63,10 @@ function doPost(e) {
     ];
 
     if (data.sessionId) {
-      var lastRow = sheet.getLastRow();
-      var sessionCol = 1;
-      var foundRow = null;
-      if (lastRow >= 2) {
-        var colA = sheet.getRange(2, sessionCol, lastRow, sessionCol).getValues();
-        for (var r = 0; r < colA.length; r++) {
-          if (String(colA[r][0]) === String(data.sessionId)) {
-            foundRow = r + 2;
-            break;
-          }
-        }
-      }
-      if (foundRow !== null) {
-        sheet.getRange(foundRow, 1, foundRow, rowValues.length).setValues([rowValues]);
+      var finder = sheet.createTextFinder(data.sessionId).matchEntireCell(true).findNext();
+      if (finder) {
+        var foundRow = finder.getRow();
+        sheet.getRange(foundRow, 1, 1, rowValues.length).setValues([rowValues]);
       } else {
         sheet.appendRow(rowValues);
       }

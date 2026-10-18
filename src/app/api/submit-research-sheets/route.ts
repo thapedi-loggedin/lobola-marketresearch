@@ -31,6 +31,12 @@ export async function POST(request: Request) {
     );
   }
 
+  // #region agent log
+  await fetch('http://127.0.0.1:7246/ingest/eb73270a-a613-4952-ac89-233027f0a62e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-research-sheets/route.ts:POST',message:'parsed body before forward',data:{sessionId:data.sessionId,submitted:data.submitted,hasSessionId:'sessionId' in data && data.sessionId != null},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+  // eslint-disable-next-line no-console
+  console.log('[lobola sheets] sessionId:', data.sessionId ?? '(missing)', 'submitted:', data.submitted);
+  // #endregion agent log
+
   try {
     const res = await fetch(WEB_APP_URL, {
       method: "POST",

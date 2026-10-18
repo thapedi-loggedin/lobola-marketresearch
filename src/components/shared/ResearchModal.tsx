@@ -135,6 +135,9 @@ export function ResearchModal({
     }
     if (!sessionIdRef.current) {
       sessionIdRef.current = crypto.randomUUID();
+      // #region agent log
+      fetch('http://127.0.0.1:7246/ingest/eb73270a-a613-4952-ac89-233027f0a62e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ResearchModal.tsx:effect',message:'sessionId set on modal open',data:{sessionId:sessionIdRef.current},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+      // #endregion agent log
     }
     // Apply preselection on open
     if (preselectNeeds.length > 0) {
@@ -210,6 +213,9 @@ export function ResearchModal({
       setCurrentStep(currentStep + 1);
       setErrors({});
       const sid = sessionIdRef.current;
+      // #region agent log
+      fetch('http://127.0.0.1:7246/ingest/eb73270a-a613-4952-ac89-233027f0a62e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'ResearchModal.tsx:handleNext',message:'saveResearchProgress called',data:{sessionId:sid,currentStep},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+      // #endregion agent log
       if (sid) {
         const payload: ResearchSubmission = {
           purpose: Array.from(purpose),
